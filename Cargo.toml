@@ -1,6 +1,7 @@
 [package]
-name = "hello-world"
+name = "hello-world-rust"
 version = "0.1.0"
+authors = ["Rodrigo Llull T. <rllullt@gmail.com>"]
 edition = "2021"
 
 [dependencies]
