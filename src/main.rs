@@ -1,3 +1,5 @@
+mod user_input;
+
 fn main() {
     let mut message = String::from("Name: Óscar, Height: ");
     message.clear();
@@ -6,6 +8,9 @@ fn main() {
     println!("{}{}", message, height);
 
     el_maybe();
+
+    println!("User input:");
+    user_input::user_input();
 }
 
 fn el_maybe() {
