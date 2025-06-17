@@ -12,6 +12,7 @@ Rust fits in the same area as C++:
 - Has no runtime or garbage collection.
 - Focuses on reliability and safety without sacrificing performance.
 
+
 ## The Rust Ecosystem
 As mentioned in the «Comprehensive Rust» book:
 The Rust ecosystem consists of a number of tools, of which the main ones are:
@@ -32,3 +33,12 @@ Note: TOML means Tom’s Obvious, Minimal Language.
 It is Cargo’s configuration format.
 
 In Rust, packages of code are referred to as ‘crates’ (for the [dependencies] section).
+
+
+## Benefits of Rust
+
+- Compile time memory safety - whole classes of memory bugs are prevented at compile time
+- No undefined runtime behavior - what a Rust statement does is never left unspecified
+- Modern language features - as expressive and ergonomic as higher-level languages, like enums and pattern matching, *generics*, and great compiler errors.
+
+Important: *Generics* son una herramienta poderosa en la programación moderna que permiten escribir código más flexible, seguro y reutilizable al abstraer los tipos de datos con los que se trabaja. Tanto TypeScript como Rust (y muchos otros lenguajes como Java, C#, Go, Swift, etc.) hacen un uso extensivo de los genéricos, aunque con diferencias en su implementación y enfoque (como el borrado de tipos vs. la monomorfización).
