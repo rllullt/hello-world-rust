@@ -42,3 +42,10 @@ In Rust, packages of code are referred to as ‘crates’ (for the [dependencies
 - Modern language features - as expressive and ergonomic as higher-level languages, like enums and pattern matching, *generics*, and great compiler errors.
 
 Important: *Generics* son una herramienta poderosa en la programación moderna que permiten escribir código más flexible, seguro y reutilizable al abstraer los tipos de datos con los que se trabaja. Tanto TypeScript como Rust (y muchos otros lenguajes como Java, C#, Go, Swift, etc.) hacen un uso extensivo de los genéricos, aunque con diferencias en su implementación y enfoque (como el borrado de tipos vs. la monomorfización).
+
+
+## Macro Hygiene
+
+A macro being ‘hygienic’ means that it doesn‘t accidentally capture identifiers from the scope they are used in.
+
+Macros in Rust are **partially** hygienic, also called mixed hygiene. This means that they are hygienic when it comes to local variables, labels and $crate, but nothing else.
