@@ -49,3 +49,70 @@ Important: *Generics* son una herramienta poderosa en la programación moderna q
 A macro being ‘hygienic’ means that it doesn‘t accidentally capture identifiers from the scope they are used in.
 
 Macros in Rust are **partially** hygienic, also called mixed hygiene. This means that they are hygienic when it comes to local variables, labels and $crate, but nothing else.
+
+
+## Loops
+
+- `while`
+- `for`
+- `loop`: works ‘like’ a `while true`, until the condition of a `break` is met. Use it for things like servers that need to serve connections forever. Also, this is the only looping construct that can return a non-trivial value. This is because it’s guaranteed to only return at a `break` statement, unlike `while` and `for`, which can return when the condition fails, too.
+
+### `break` and `continue`
+(from Comprehensive Rust)
+
+The same as other languages, `break` finishes the loop early and `continue` starts immediately the next iteration.
+
+But, here is a special characteristic: *Labels*. They are used to break out of nested loops, for example:
+```rust
+fn main() {
+    let s = [[5, 6, 7], [8, 9, 10], [21, 15, 32]];
+    let mut elements_searched = 0;
+    let target_value = 10;
+    'outer: for i in 0..=2 {
+        for j in 0..=2 {
+            elements_searched += 1;
+            if s[i][j] == target_value {
+                break 'outer;
+            }
+        }
+    }
+    dbg!(elements_searched);
+}
+```
+Here, the `break` command exites the `for` loop labeled `'outer`.
+
+Labeled breaks also work on arbitrary blocks, e.g.:
+```rust
+'label: {
+    break 'label;
+    println!("This line gets skipped");
+}
+```
+
+
+## Macros
+(from Comprehensive Rust)
+
+Macros are expanded into Rust code during compilation, and can take a variable number of arguments. They are distinguished by a ! at the end. The Rust standard library includes an assortment of useful macros.
+
+- println!(format, ..) prints a line to standard output, applying formatting described in std::fmt.
+- format!(format, ..) works just like println! but returns the result as a string.
+- dbg!(expression) logs the value of the expression and returns it.
+- todo!() marks a bit of code as not-yet-implemented. If executed, it will panic.
+- assert! and related macros can be used to add assertions to your code. These are used heavily in writing tests.
+- unreachable! is used to mark a branch of control flow that should never be hit.
+- eprintln! allows you to print to stderr.
+
+
+## Bonus
+
+Here’s an interesting conversation part in a Reddit thread in r/haskell, called «Haskell vs Rust : elegant» (Haskell is another language I like very much):
+
+
+n0body12345 PO • hace 1 a
+Why doesn't Haskell perform so well on memory constrained contexts? I thought GHC was a pretty intelligent compiler (what I've seen thrown around).
+
+Can something be done to make Haskell more performant in such contexts? Like how cpython etc do it for python maybe
+
+Pentalis • hace 1 a
+Haskell is garbage collected, Rust is not. The former will clog the scarce memory of embedded systems rather quickly and there's nothing the compiler can do about it; it's a problem with garbage collection in general. Also the device might need running continuously, and micro pauses for garbage collection may be completely off the table. Rust wont have any of those problems.
