@@ -2,6 +2,7 @@ mod user_input;
 mod fibo;
 mod factorial;
 mod collatz;
+mod arrays;
 
 fn main() {
     // Most Rust line codes end with a semicolon («the expression is over»)
@@ -60,6 +61,27 @@ fn main() {
     let n1 = 11;  // collatz length of 15
     println!("Collatz length of (n1={n1}): {}", collatz::collatz_length(n1));
 
+    println!("Arrays:");
+    arrays::an_array();
+
+    let tuple = (1, 5, 3);
+    println!(
+        "{tuple:?}: {}",
+        if check_order(tuple) { "ordered" } else { "unordered" }
+    );
+
+    println!("Transpose a 3x3 matrix:");
+    let matrix = [
+        [101, 102, 103], // <-- the comment makes rustfmt add a newline
+        [201, 202, 203],
+        [301, 302, 303],
+    ];
+    // dbg!(matrix);
+    let transposed = arrays::transpose(matrix);
+    // dbg!(transposed);
+    assert_eq!(transposed, [[101, 201, 301], [102, 202, 302], [103, 203, 303]]);
+    println!("All ok if this prints");
+
     println!("User input:");
     user_input::user_input();
 }
@@ -73,4 +95,10 @@ fn el_maybe() {
     else {
         println!("There is no number");
     }
+}
+
+fn check_order(tuple: (i32, i32, i32)) -> bool {
+    println!("check_order of tuple with pattern matching");
+    let (left, middle, right) = tuple;
+    left < middle && middle < right
 }
