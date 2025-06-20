@@ -104,6 +104,22 @@ Macros are expanded into Rust code during compilation, and can take a variable n
 - eprintln! allows you to print to stderr.
 
 
+### println! macro
+
+println! macro receives:
+- {} for the default output format
+- {:?} for the debug output, it requires the type to implement the Debug trait
+- {:b} for binary format
+- {:x} for hexadecimal format
+- {:o} for octal format
+- {:e} for scientific notation
+- {:p} for pointer address
+
+Note: Arrays only implement debug output format
+
+Adding `#`, eg `{a:#?}`, invokes a ‘pretty printing’ format, which can be easier to read.
+
+
 ## Bonus
 
 Here’s an interesting conversation part in a Reddit thread in r/haskell, called «Haskell vs Rust : elegant» (Haskell is another language I like very much):
