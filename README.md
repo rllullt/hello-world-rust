@@ -120,6 +120,36 @@ Note: Arrays only implement debug output format
 Adding `#`, eg `{a:#?}`, invokes a ‘pretty printing’ format, which can be easier to read.
 
 
+## References
+(from Comprehensive Rust)
+
+- References can never be `null`, making them safe to use without `null` checks.
+- References can’t outlive the data they point to.
+
+
+### Shared References
+
+A reference provides a way to access another value without taking ownership of the value, and is also called “borrowing”.
+Shared references are read-only, and the referenced data cannot change.
+
+A shared reference to a type `T` has type `&T`.
+A reference value is made with the `&` operator.
+The `*` operator “dereferences” a reference, yielding its value.
+
+- References can never be null in Rust, so null checking is not necessary.
+- Rust will auto-dereference in some cases, in particular when invoking methods (try `r.is_ascii()`). There is no need for an -> operator like in C++.
+- A shared reference does not allow modifying the value it refers to, even if that value was mutable (check exclusive references).
+
+
+### Exclusive references
+
+Exclusive references, also known as mutable references, allow changing the value they refer to. They have type `&mut T`.
+- ‘Exclusive’ means that only this reference can be used to access the value, no other references (shared or exclusive) can exist at a time.
+The referenced value cannot be accessed while the exclusive reference exists.
+- Note: `let mut x_coord: &i32` and `let x_coord: &mut i32` are very different.
+The first one represents a shared reference which can be bound to different values, while the second represents an exclusive reference to a mutable value.
+
+
 ## Bonus
 
 Here’s an interesting conversation part in a Reddit thread in r/haskell, called «Haskell vs Rust : elegant» (Haskell is another language I like very much):
