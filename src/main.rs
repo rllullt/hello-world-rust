@@ -4,6 +4,8 @@ mod factorial;
 mod collatz;
 mod arrays;
 mod geometry;
+mod structs_and_enums;
+mod elevator_events;
 
 fn main() {
     // Most Rust line codes end with a semicolon («the expression is over»)
@@ -135,6 +137,11 @@ fn main() {
 
     println!("Testing geometry:");
     geometry::main();
+
+    println!("Testing structs:");
+    structs_and_enums::main();
+
+    elevator_events::main();
 
     println!("User input:");
     user_input::user_input();
