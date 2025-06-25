@@ -150,6 +150,121 @@ The referenced value cannot be accessed while the exclusive reference exists.
 The first one represents a shared reference which can be bound to different values, while the second represents an exclusive reference to a mutable value.
 
 
+## Structs
+
+Regular structs are the most commonly used.
+Each field defined within them has a name and a type, and once defined can be accessed using example_struct.field syntax.
+The fields of a struct share its mutability, so `foo.bar = 2;` would only be valid if foo was mutable.
+Adding pub to a field makes it visible to code in other modules, as well as allowing it to be directly accessed and modified.
+
+Tuple structs are similar to regular structs, but its fields have no names.
+They are used like tuples, with deconstruction possible via `let TupleStruct(x, y) = foo;` syntax.
+For accessing individual variables, the same syntax is used as with regular tuples, namely `foo.0`, `foo.1`, etc, starting at zero.
+
+Unit structs are most commonly used as marker.
+They have a size of zero bytes, but unlike empty enums they can be instantiated, making them isomorphic to the unit type `()`.
+Unit structs are useful when you need to implement a trait on something, but don't need to store any data inside it.
+
+### Named structs
+
+Very similar to C and C++.
+```
+struct StructName {
+    field1: type,
+    field2: type,
+}
+```
+
+Creation:
+```
+let struct1 = StructName {
+    field1: Type::from("The type");
+    field2: 10,
+};
+// We can copy almost all the fields of struct1 into struct2:
+let field1 = Type::from("Struct 2 field 1");
+let struct2 = StructName { field1: field1, ..struct1 };
+```
+
+### Tuple structs and Newtypes
+
+```
+struct Point(i32, i32);  // tuple struct, field names are not important
+struct PoundsOfForce(f64);
+struct Newtons(f64);  // single-field wrappers: Newtypes
+```
+
+Newtypes are a great way to encode additional information about the value in a primitive type, for example:
+- The number is measured in some units: `Newtons` in the example above.
+- The value passed some validation when it was created, so you no longer have to validate it again at every use: `PhoneNumber(String)` or `OddNumber(u32)`.
+
+The example of Newtypes is a subtle reference to the [Mars Climate Orbiter](https://en.wikipedia.org/wiki/Mars_Climate_Orbiter) failure.
+
+### Enums and Type Aliases
+
+A type alias creates a name for another type. The two types can be used interchangeably.
+This is similar to a `typedef`.
+```
+enum CarryableConcreteItem {
+    Left,
+    Right,
+}
+
+type Item = CarryableConcreteItem;
+
+// Aliases are more useful with long, complex types:
+use std::cell::RefCell;
+use std::sync::{Arc, RwLock};
+type PlayerInventory = RwLock<Vec<Arc<RefCell<Item>>>>;
+```
+A newtype is often a better alternative since it creates a distinct type.
+Prefer `struct InventoryCount(usize)` to `type InventoryCount = usize`.
+
+
+### `const` and `static`
+
+Constants are evaluated at compile time and their values are inlined wherever they are used.
+Only functions marked const can be called at compile time to generate const values. const functions can however be called at runtime.
+```
+const DIGEST_SIZE: usize = 3;
+const FILL_VALUE: u8 = calculate_fill_value();
+
+const fn calculate_fill_value() -> u8 {
+    if DIGEST_SIZE < 10 { 42 } else { 13 }
+}
+
+fn compute_digest(text: &str) -> [u8; DIGEST_SIZE] {
+    let mut digest = [FILL_VALUE; DIGEST_SIZE];
+    for (idx, &b) in text.as_bytes().iter().enumerate() {
+        digest[idx % DIGEST_SIZE] = digest[idx % DIGEST_SIZE].wrapping_add(b);
+    }
+    digest
+}
+
+fn main() {
+    let digest = compute_digest("Hello");
+    println!("digest: {digest:?}");
+}
+```
+
+Static variables will live during the whole execution of the program, and therefore will not move.
+When a globally-scoped value does not have a reason to need object identity, `const` is generally preferred.
+```
+static BANNER: &str = "Welcome to RustOS 3.14";
+
+fn main() {
+    println!("{BANNER}");
+}
+```
+
+Because `static` variables are accessible from any thread, they must be `Sync`.
+Interior mutability is possible through a `Mutex`, atomic or similar.
+
+It is common to use `OnceLock` in a `static` as a way to support initialization on first use.
+`OnceCell` is not `Sync` and thus cannot be used in this context.
+Thread-local data can be created with the macro `std::thread_local`.
+
+
 ## Bonus
 
 Here’s an interesting conversation part in a Reddit thread in r/haskell, called «Haskell vs Rust : elegant» (Haskell is another language I like very much):
