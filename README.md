@@ -168,7 +168,7 @@ Unit structs are useful when you need to implement a trait on something, but don
 ### Named structs
 
 Very similar to C and C++.
-```
+```rust
 struct StructName {
     field1: type,
     field2: type,
@@ -176,7 +176,7 @@ struct StructName {
 ```
 
 Creation:
-```
+```rust
 let struct1 = StructName {
     field1: Type::from("The type");
     field2: 10,
@@ -188,7 +188,7 @@ let struct2 = StructName { field1: field1, ..struct1 };
 
 ### Tuple structs and Newtypes
 
-```
+```rust
 struct Point(i32, i32);  // tuple struct, field names are not important
 struct PoundsOfForce(f64);
 struct Newtons(f64);  // single-field wrappers: Newtypes
@@ -204,7 +204,7 @@ The example of Newtypes is a subtle reference to the [Mars Climate Orbiter](http
 
 A type alias creates a name for another type. The two types can be used interchangeably.
 This is similar to a `typedef`.
-```
+```rust
 enum CarryableConcreteItem {
     Left,
     Right,
@@ -225,7 +225,7 @@ Prefer `struct InventoryCount(usize)` to `type InventoryCount = usize`.
 
 Constants are evaluated at compile time and their values are inlined wherever they are used.
 Only functions marked const can be called at compile time to generate const values. const functions can however be called at runtime.
-```
+```rust
 const DIGEST_SIZE: usize = 3;
 const FILL_VALUE: u8 = calculate_fill_value();
 
@@ -249,7 +249,7 @@ fn main() {
 
 Static variables will live during the whole execution of the program, and therefore will not move.
 When a globally-scoped value does not have a reason to need object identity, `const` is generally preferred.
-```
+```rust
 static BANNER: &str = "Welcome to RustOS 3.14";
 
 fn main() {
@@ -263,6 +263,69 @@ Interior mutability is possible through a `Mutex`, atomic or similar.
 It is common to use `OnceLock` in a `static` as a way to support initialization on first use.
 `OnceCell` is not `Sync` and thus cannot be used in this context.
 Thread-local data can be created with the macro `std::thread_local`.
+
+
+## Pattern Matching
+
+### Irrefutable Patterns
+
+Irrefutable, means that they will always match the value on the right hand side.
+
+```rust
+fn takes_tuple(tuple: (char, i32, bool)) {
+    let a = tuple.0;
+    let b = tuple.1;
+    let c = tuple.2;
+
+    // This does the same thing as above.
+    let (a, b, c) = tuple;
+
+    // Ignore the first element, only bind the second and third.
+    let (_, b, c) = tuple;
+
+    // Ignore everything but the last element.
+    let (.., c) = tuple;
+}
+```
+
+With the `..` operator, it can be ignored the middle elements of a tuple too.
+For example, `tuple: (char, i32, bool, u8) -> let (first, .., last) = tuple;`.
+It also works with arrays, for example `array: [u8; 5] -> let [first, .., last] = array;`.
+
+
+### Matching Values
+
+Values are matched with *patterns*, that can be simple values or more complex conditions.
+```rust
+#[rustfmt::skip]
+fn main() {
+    let input = 'x';
+    match input {
+        'q'                       => println!("Quitting"),
+        'a' | 's' | 'w' | 'd'     => println!("Moving around"),
+        '0'..='9'                 => println!("Number input"),
+        key if key.is_lowercase() => println!("Lowercase: {key}"),
+        _                         => println!("Something else"),
+    }
+}
+```
+
+#### @ syntax
+
+Binds a part of a pattern to a variable. For example:
+
+```rust
+let opt = Some(123);
+match opt {
+    outer @ Some(inner) => {
+        println!("outer: {outer:?}, inner: {inner}");
+    }
+    None => {}
+}
+```
+In this example inner has the value 123 which it pulled from the Option via destructuring, outer captures the entire Some(inner) expression,
+so it contains the full Option::Some(123).
+This is rarely used but can be useful in more complex patterns.
 
 
 ## Bonus
