@@ -35,6 +35,12 @@ fn describe(person: &Person) {
     println!("{} is {} years old", person.name, (*person).age);
 }
 
+struct Foo {
+    x: (u32, u32),
+    y: u32,
+}
+
+
 pub fn main() {
     let mut peter = Person {
         name: String::from("Peter"),
@@ -82,5 +88,13 @@ pub fn main() {
         println!("Option<&i32>:");
         dbg_bits!(None::<&i32>, usize);
         dbg_bits!(Some(&0i32), usize);
+    }
+
+    #[rustfmt::skip]
+    let foo = Foo { x: (1, 2), y: 3 };
+    match &foo {  // with this, the pattern syntex remains the same, but the capture becomes a shared reference. With &mut foo the capture beomes an exclusive reference
+        Foo { y: 2, x: i }   => println!("y = 2, x = {i:?}"),
+        Foo { x: (1, b), y } => println!("x.0 = 1, b = {b}, y = {y}"),
+        Foo { y, .. }        => println!("y = {y}, other fields were ignored"),
     }
 }
