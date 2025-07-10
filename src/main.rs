@@ -6,6 +6,8 @@ mod arrays;
 mod geometry;
 mod structs_and_enums;
 mod elevator_events;
+mod let_control;
+mod expression_evaluation;
 
 fn main() {
     // Most Rust line codes end with a semicolon («the expression is over»)
@@ -142,6 +144,9 @@ fn main() {
     structs_and_enums::main();
 
     elevator_events::main();
+
+    println!("Let control flow:");
+    let_control::main();
 
     println!("User input:");
     user_input::user_input();

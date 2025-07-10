@@ -328,6 +328,27 @@ so it contains the full Option::Some(123).
 This is rarely used but can be useful in more complex patterns.
 
 
+### Let Control Flow
+
+```rust
+if let  // executes different code depending on whether a value matches a pattern
+while let  // repeatedly tests a value against a pattern
+let else  // for the common case of matching a pattern and returning from the function
+```
+
+- Unlike `match`, `if let` doesn’t have to cover all branches, making it more concise in some cases.
+- `if let` common usage: handling `Some` values when working with `Option`.
+- With an `else` clause, `if let` can be used as an expression.
+
+- `while let` loop will keep going as long as the value matches the pattern.
+- `while let` loop can be rewrited as an infinite `while` loop with an `if` statement that breaks when there is no value to unwrap for `name.pop()`.
+The `while let` provides syntactic sugar for the above scenario.
+- `while let` cannot be used as an expression, because it may have no value if the condition is false.
+
+- The `let else` early return-based control flow is common in Rust error handling code, where you try to get a value out of a `Result`,
+  returning an error if the `Result` was `Err`.
+
+
 ## Bonus
 
 Here’s an interesting conversation part in a Reddit thread in r/haskell, called «Haskell vs Rust : elegant» (Haskell is another language I like very much):
