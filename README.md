@@ -501,6 +501,136 @@ fn main() {
 ```
 
 
+## Generics
+
+Generics let you abstract algorithms or data structures (such as sorting or a binary tree) over the types used or stored.
+For example, let’s see a pair of functions that function the same way, but for different types:
+
+```rust
+fn pick_i32(cond: bool, left: i32, right: i32) -> i32 {
+    if cond { left } else { right }
+}
+
+fn pick_char(cond: bool, left: char, right: char) -> char {
+    if cond { left } else { right }
+}
+```
+
+The same logic can be abstracted into a more general function that works for both types:
+
+```rust
+fn pick<T>(cond: bool, left: T, right: T) -> T {
+    if cond { left } else { right }
+}
+```
+
+### Trait bounds
+
+It is often required that the types considered in the generics implement a specific trait, to call the trait’s methods.
+
+```rust
+fn duplicate<T: Clone>(a: T) -> (T, T) {
+    (a.clone(), a.clone())
+}
+
+struct NotCloneable;  // This struct doesn’t implement any trait
+
+fn main() {
+    let foo = String::from("foo");  // String implements the trait Clone
+    let pair = duplicate(foo);
+    println!("{pair:?}");
+}
+```
+
+#### `where` clause
+
+```rust
+fn duplicate<T>(a: T) -> (T, T)
+where
+    T: Clone,
+{
+    (a.clone(), a.clone())
+}
+```
+- It declutters the function signature if you have many parameters.
+- It has additional features making it more powerful: the type on the left of “:” can be arbitrary, like `Option<T>`.
+
+
+### Generic data types
+
+Generics can be used over the concret field type.
+
+```rust
+struct VerbosityFilter<L> {
+    max_verbosity: u8,
+    inner: L,
+}
+
+impl<L: Logger> Logger for VerbosityFilter<L> {
+    fn log(&self, verbosity: u8, message: &str) {
+        if verbosity <= self.max_verbosity {
+            self.inner.log(verbosity, message);
+        }
+    }
+}
+```
+
+The type “L” must implement the trait “Logger”.
+
+Generally, in Rust we put the trait bounds on the `impl` blocks, but can also be put on the type itself.
+
+### Generic traits
+
+```rust
+pub trait From<T>: Sized {
+    fn from(value: T) -> Self;
+}
+
+#[derive(Debug)]
+struct Foo(String);
+
+impl From<u32> for Foo {
+    fn from(from: u32) -> Foo {
+        Foo(format!("Converted from integer: {from}"))
+    }
+}
+
+impl From<bool> for Foo {
+    fn from(from: bool) -> Foo {
+        Foo(format!("Converted from bool: {from}"))
+    }
+}
+
+fn main() {
+    let from_int = Foo::from(123);
+    let from_bool = Foo::from(true);
+    dbg!(from_int);
+    dbg!(from_bool);
+}
+```
+
+### `impl Trait`
+
+Similar to trait bounds, an `impl Trait` syntax can be used in function arguments and return values:
+It allows to work with types which you cannot name.
+
+```rust
+// Syntactic sugar for:
+//   fn add_42_millions<T: Into<i32>>(x: T) -> i32 {
+fn add_42_millions(x: impl Into<i32>) -> i32 {
+    x.into() + 42_000_000
+}
+fn pair_of(x: u32) -> impl std::fmt::Debug {
+    (x + 1, x - 1)
+}
+```
+
+### `dyn Trait`
+
+Rust also supports using `dyn Traits` for type-erased, dynamic dispatch via trait objects.
+A dyn Trait is considered to be “type-erased”, because we no longer have compile-time knowledge of what the concrete type is.
+
+
 ## Bonus
 
 Here’s an interesting conversation part in a Reddit thread in r/haskell, called «Haskell vs Rust : elegant» (Haskell is another language I like very much):

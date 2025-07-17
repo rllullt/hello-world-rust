@@ -9,6 +9,7 @@ mod elevator_events;
 mod let_control;
 mod expression_evaluation;
 mod logger;
+mod generic_min;
 
 fn main() {
     // Most Rust line codes end with a semicolon («the expression is over»)
