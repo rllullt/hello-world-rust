@@ -10,6 +10,7 @@ mod let_control;
 mod expression_evaluation;
 mod logger;
 mod generic_min;
+mod closures;
 
 fn main() {
     // Most Rust line codes end with a semicolon («the expression is over»)
@@ -152,6 +153,9 @@ fn main() {
 
     println!("Logger trait:");
     logger::main();
+
+    println!("Closures:");
+    closures::main();
 
     println!("User input:");
     user_input::user_input();
